@@ -109,52 +109,9 @@ fi
 echo ""
 
 # ============================================================================
-# 2. Configure .mcp.json (MCP Servers)
+# 2. Configure Skill Environment Files
 # ============================================================================
-echo -e "${YELLOW}[2/4] Configuring MCP servers...${NC}"
-
-MCP_EXAMPLE="$SCRIPT_DIR/.mcp.json.example"
-MCP_FILE="$PROJECT_ROOT/.mcp.json"
-
-if [ -f "$MCP_EXAMPLE" ]; then
-    if [ -f "$MCP_FILE" ]; then
-        echo -e "  ${YELLOW}⚠${NC}  .mcp.json already exists"
-        read -p "  Overwrite existing configuration? (y/N): " overwrite_mcp
-        if [[ ! "$overwrite_mcp" =~ ^[Yy]$ ]]; then
-            echo -e "  ${BLUE}→${NC} Skipping .mcp.json configuration"
-        else
-            configure_mcp=true
-        fi
-    else
-        configure_mcp=true
-    fi
-
-    if [ "$configure_mcp" = true ]; then
-        echo ""
-        echo -e "  ${BLUE}Figma MCP Server Configuration${NC}"
-        echo -e "  Get your API key: https://www.figma.com/developers/api#access-tokens"
-        echo ""
-        read -p "  Enter Figma API key (or press Enter to skip): " figma_api_key
-
-        if [ -n "$figma_api_key" ]; then
-            # Copy and replace the placeholder
-            sed "s/YOUR-KEY/$figma_api_key/" "$MCP_EXAMPLE" > "$MCP_FILE"
-            echo -e "  ${GREEN}✓${NC} Created .mcp.json with Figma API key"
-        else
-            cp "$MCP_EXAMPLE" "$MCP_FILE"
-            echo -e "  ${YELLOW}⚠${NC}  Created .mcp.json with placeholder (configure later)"
-        fi
-    fi
-else
-    echo -e "  ${RED}✗${NC} .mcp.json.example not found"
-fi
-
-echo ""
-
-# ============================================================================
-# 3. Configure Skill Environment Files
-# ============================================================================
-echo -e "${YELLOW}[3/4] Configuring skill environment files...${NC}"
+echo -e "${YELLOW}[2/4] Configuring skill environment files...${NC}"
 
 # --- media-processor skill ---
 MEDIA_PROCESSOR_DIR="$SCRIPT_DIR/skills/media-processor"
@@ -181,6 +138,7 @@ if [ -f "$MEDIA_PROCESSOR_ENV_EXAMPLE" ]; then
     if [ "$configure_media_processor" = true ]; then
         echo ""
         echo -e "  ${BLUE}Google Gemini API Configuration${NC}"
+        echo -e "  Used by media-processor skill for audio/video/image processing."
         echo -e "  Get your API key: https://aistudio.google.com/apikey"
         echo ""
         read -p "  Enter Gemini API key (required): " gemini_api_key
@@ -188,12 +146,58 @@ if [ -f "$MEDIA_PROCESSOR_ENV_EXAMPLE" ]; then
         if [ -n "$gemini_api_key" ]; then
             sed "s/your_api_key_here/$gemini_api_key/" "$MEDIA_PROCESSOR_ENV_EXAMPLE" > "$MEDIA_PROCESSOR_ENV"
             echo -e "  ${GREEN}✓${NC} Created .env for media-processor skill"
+            echo -e "  ${BLUE}→${NC} Stored at: ${BLUE}$MEDIA_PROCESSOR_ENV${NC}"
         else
             echo -e "  ${RED}✗${NC} Skipped - Gemini API key is required for this skill"
         fi
     fi
 else
     echo -e "  ${YELLOW}⚠${NC}  media-processor skill not found (skipping)"
+fi
+
+echo ""
+
+# ============================================================================
+# 3. Configure .mcp.json (MCP Servers)
+# ============================================================================
+echo -e "${YELLOW}[3/4] Configuring MCP servers...${NC}"
+
+MCP_EXAMPLE="$SCRIPT_DIR/.mcp.json.example"
+MCP_FILE="$PROJECT_ROOT/.mcp.json"
+
+if [ -f "$MCP_EXAMPLE" ]; then
+    if [ -f "$MCP_FILE" ]; then
+        echo -e "  ${YELLOW}⚠${NC}  .mcp.json already exists"
+        read -p "  Overwrite existing configuration? (y/N): " overwrite_mcp
+        if [[ ! "$overwrite_mcp" =~ ^[Yy]$ ]]; then
+            echo -e "  ${BLUE}→${NC} Skipping .mcp.json configuration"
+        else
+            configure_mcp=true
+        fi
+    else
+        configure_mcp=true
+    fi
+
+    if [ "$configure_mcp" = true ]; then
+        echo ""
+        echo -e "  ${BLUE}Figma MCP Server Configuration (optional)${NC}"
+        echo -e "  Only needed if you use Figma for design-to-code workflows."
+        echo -e "  Get your API key: https://www.figma.com/developers/api#access-tokens"
+        echo ""
+        read -p "  Enter Figma API key (or press Enter to skip): " figma_api_key
+
+        if [ -n "$figma_api_key" ]; then
+            # Copy and replace the placeholder
+            sed "s/YOUR-KEY/$figma_api_key/" "$MCP_EXAMPLE" > "$MCP_FILE"
+            echo -e "  ${GREEN}✓${NC} Created .mcp.json with Figma API key"
+            echo -e "  ${BLUE}→${NC} Stored at: ${BLUE}$MCP_FILE${NC}"
+        else
+            cp "$MCP_EXAMPLE" "$MCP_FILE"
+            echo -e "  ${YELLOW}⚠${NC}  Created .mcp.json with placeholder (configure later)"
+        fi
+    fi
+else
+    echo -e "  ${RED}✗${NC} .mcp.json.example not found"
 fi
 
 
