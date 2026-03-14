@@ -1,6 +1,6 @@
 {
   "name": "claude-prime",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Supercharge Claude Code with skills, commands, and workflows for agent-skill-driven development",
   "bin": {
     "claude-prime": "./bin/cli.js"
