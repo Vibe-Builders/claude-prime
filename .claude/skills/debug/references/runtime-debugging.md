@@ -13,8 +13,8 @@ Hypothesis-driven runtime instrumentation for bugs that static analysis cannot r
 
 | Detail | Value |
 |--------|-------|
-| Script | `fix/scripts/debug-server.js` |
-| Start | `node .claude/skills/fix/scripts/debug-server.js [sessionId]` (run in background) |
+| Script | `debug/scripts/debug-server.js` |
+| Start | `node .claude/skills/debug/scripts/debug-server.js [sessionId]` (run in background) |
 | Host | `127.0.0.1:6143` |
 | Endpoint | `POST /ingest/{sessionId}` |
 | Log file | `.claude/tmp/debug-{sessionId}.log` (JSONL format) |

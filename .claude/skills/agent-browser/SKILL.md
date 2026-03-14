@@ -102,6 +102,12 @@ agent-browser diff url <url1> <url2> --wait-until networkidle  # Custom wait str
 agent-browser diff url <url1> <url2> --selector "#main"  # Scope to element
 ```
 
+## Authentication Handling
+
+When a task requires auth, detect whether credentials are sensitive (production, real accounts, OAuth/SSO) or non-sensitive (localhost, staging, test). Sensitive → open headed browser for user to authenticate manually. Non-sensitive → agent can fill credentials directly. After either path succeeds, offer to save for reuse.
+
+-> See [references/authentication.md](references/authentication.md) for sensitivity heuristics, auth flows, and credential storage patterns.
+
 ## Common Patterns
 
 ### Form Submission
@@ -117,69 +123,9 @@ agent-browser click @e5
 agent-browser wait --load networkidle
 ```
 
-### Authentication with Auth Vault (Recommended)
+### Authentication
 
-```bash
-# Save credentials once (encrypted with AGENT_BROWSER_ENCRYPTION_KEY)
-# Recommended: pipe password via stdin to avoid shell history exposure
-echo "pass" | agent-browser auth save github --url https://github.com/login --username user --password-stdin
-
-# Login using saved profile (LLM never sees password)
-agent-browser auth login github
-
-# List/show/delete profiles
-agent-browser auth list
-agent-browser auth show github
-agent-browser auth delete github
-```
-
-### Authentication with State Persistence
-
-Always store auth state in `.claude/tmp/` (gitignored, project-scoped):
-
-```bash
-# Login once and save state
-agent-browser open https://app.example.com/login
-agent-browser snapshot -i
-agent-browser fill @e1 "$USERNAME"
-agent-browser fill @e2 "$PASSWORD"
-agent-browser click @e3
-agent-browser wait --url "**/dashboard"
-agent-browser state save .claude/tmp/auth-state-myapp.json
-
-# Reuse in future sessions
-agent-browser state load .claude/tmp/auth-state-myapp.json
-agent-browser open https://app.example.com/dashboard
-
-# Discover saved states for current project
-ls .claude/tmp/auth-state-*.json
-```
-
-**Naming convention**: `auth-state-{name}.json` where `{name}` is a short identifier (domain, app name).
-
-### Session Persistence
-
-```bash
-# Auto-save/restore cookies and localStorage across browser restarts
-agent-browser --session-name myapp open https://app.example.com/login
-# ... login flow ...
-agent-browser close  # State auto-saved to ~/.agent-browser/sessions/
-
-# Next time, state is auto-loaded
-agent-browser --session-name myapp open https://app.example.com/dashboard
-
-# Encrypt state at rest
-export AGENT_BROWSER_ENCRYPTION_KEY=$(openssl rand -hex 32)
-agent-browser --session-name secure open https://app.example.com
-
-# Manage saved states
-agent-browser state list
-agent-browser state show myapp-default.json
-agent-browser state clear myapp
-agent-browser state clean --older-than 7
-```
-
-**Naming convention**: `--session-name {project}-{domain}` (e.g., `claude-prime-influmation`, `my-saas-github`). Project prefix avoids collisions since sessions are stored globally.
+-> See [references/authentication.md](references/authentication.md) for sensitivity detection, auth flows, and credential storage patterns.
 
 ### Data Extraction
 

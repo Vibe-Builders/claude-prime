@@ -4,7 +4,8 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
-  <img src="https://img.shields.io/github/v/release/avibebuilder/claude-prime?label=version&color=green" alt="Version">
+  <a href="https://www.npmjs.com/package/claude-prime"><img src="https://img.shields.io/npm/v/claude-prime?color=green" alt="npm version"></a>
+  <img src="https://img.shields.io/github/v/release/avibebuilder/claude-prime?label=release&color=blue" alt="GitHub Release">
 </p>
 
 You've heard Claude Code can do amazing things. Skills, hooks, agents, memory systems — but who has time to figure all that out? **Claude Prime sets it up for you in one command.** Just install, prime your project, and your Claude Code works 10x better — right now.
@@ -14,8 +15,19 @@ You've heard Claude Code can do amazing things. Skills, hooks, agents, memory sy
 ### 1. Install
 
 ```bash
+npx claude-prime install
+```
+
+<details>
+<summary><strong>Alternative: install without Node.js</strong></summary>
+
+<br>
+
+```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/avibebuilder/claude-prime/main/install.sh)
 ```
+
+</details>
 
 ### 2. Add alias (recommended)
 

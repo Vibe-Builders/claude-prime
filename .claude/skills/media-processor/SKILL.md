@@ -9,13 +9,6 @@ Process audio, images, videos, documents, and generate images using Google Gemin
 
 ## Core Capabilities
 
-### Audio Processing
-- Transcription with timestamps (up to 9.5 hours)
-- Audio summarization and analysis
-- Speech understanding and speaker identification
-- Music and environmental sound analysis
-- Text-to-speech generation with controllable voice
-
 ### Image Understanding
 - Image captioning and description
 - Object detection with bounding boxes (2.0+)
@@ -49,6 +42,13 @@ Process audio, images, videos, documents, and generate images using Google Gemin
 - Multiple aspect ratios (1:1, 16:9, 9:16, 4:3, 3:4)
 - Controllable style and quality
 
+### Audio Processing
+- Transcription with timestamps (up to 9.5 hours)
+- Audio summarization and analysis
+- Speech understanding and speaker identification
+- Music and environmental sound analysis
+- Text-to-speech generation with controllable voice
+
 ## Supported Tasks
 
 | Task | Description |
@@ -60,6 +60,16 @@ Process audio, images, videos, documents, and generate images using Google Gemin
 | `generate-hq` | High-quality image generation with enhanced detail |
 
 See [model routing](./references/model-routing.md) for model selection per task.
+
+## Pasted Images
+
+When user pastes images in chat, they are auto-saved to:
+```
+$CLAUDE_DIR/image-cache/<current_session_id>/<image_number>.png
+```
+Example: Image #1 → `$CLAUDE_DIR/image-cache/<session_id>/1.png`
+
+**To process pasted images**, find files in this directory and pass them to the scripts. Use `ls "$CLAUDE_DIR/image-cache/"` to discover the current session ID, then list its contents for available images.
 
 ## Quick Start
 

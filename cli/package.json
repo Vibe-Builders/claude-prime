@@ -1,0 +1,33 @@
+{
+  "name": "claude-prime",
+  "version": "1.0.0",
+  "description": "Supercharge Claude Code with skills, commands, and workflows for agent-skill-driven development",
+  "bin": {
+    "claude-prime": "./bin/cli.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "bin/",
+    "src/"
+  ],
+  "keywords": [
+    "claude",
+    "claude-code",
+    "ai",
+    "agent",
+    "skills",
+    "workflows"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/avibebuilder/claude-prime.git"
+  },
+  "author": "Peter Truong <peter.tr99@gmail.com>",
+  "homepage": "https://github.com/avibebuilder/claude-prime",
+  "dependencies": {
+    "@clack/prompts": "^1.1.0"
+  }
+}

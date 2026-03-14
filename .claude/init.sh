@@ -182,7 +182,7 @@ if [ -f "$MCP_EXAMPLE" ]; then
         echo ""
         echo -e "  ${BLUE}Figma MCP Server Configuration (optional)${NC}"
         echo -e "  Only needed if you use Figma for design-to-code workflows."
-        echo -e "  Get your API key: https://www.figma.com/developers/api#access-tokens"
+        echo -e "  Get your API key: https://help.figma.com/hc/en-us/articles/8085703771159-Manage-personal-access-tokens"
         echo ""
         read -p "  Enter Figma API key (or press Enter to skip): " figma_api_key
 

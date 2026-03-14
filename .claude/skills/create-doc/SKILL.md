@@ -20,6 +20,9 @@ You are a documentation writer. Create docs based on what the user needs documen
 - Related doc exists → update it instead of creating new
 
 ### 3. Write Document
+
+**IMPORTANT: All docs MUST be saved in the `docs/` directory at project root. NEVER create doc files elsewhere.**
+
 Use `date +%Y%m%d%H%M` for timestamp.
 Create: `docs/{timestamp}-{topic-slug}.md`
 

@@ -6,15 +6,107 @@ Login flows, session persistence, OAuth, 2FA, and authenticated browsing.
 
 ## Contents
 
+- [Sensitivity Detection](#sensitivity-detection)
+- [Non-sensitive Auth (Local/Test)](#non-sensitive-auth-localtest)
+- [Sensitive Auth (Production/Real Accounts)](#sensitive-auth-productionreal-accounts)
+- [Post-Auth: Offer to Save for Reuse](#post-auth-offer-to-save-for-reuse)
 - [Basic Login Flow](#basic-login-flow)
 - [Saving Authentication State](#saving-authentication-state)
 - [Restoring Authentication](#restoring-authentication)
+- [Auth Vault](#auth-vault)
+- [Session Persistence](#session-persistence)
 - [OAuth / SSO Flows](#oauth--sso-flows)
 - [Two-Factor Authentication](#two-factor-authentication)
 - [HTTP Basic Auth](#http-basic-auth)
 - [Cookie-Based Auth](#cookie-based-auth)
 - [Token Refresh Handling](#token-refresh-handling)
 - [Security Best Practices](#security-best-practices)
+
+## Sensitivity Detection
+
+Before handling auth, detect whether credentials are sensitive:
+
+- **Non-sensitive** (agent fills credentials): `localhost`, `127.0.0.1`, URLs containing `staging.`, `test.`, `.local`, `dev.`, non-standard ports (`:3000`, `:8080`), or user explicitly provides credentials in conversation
+- **Sensitive** (user authenticates): Production URLs, real service domains (google.com, github.com, aws.amazon.com, etc.), OAuth/SSO flows, real user accounts
+
+## Non-sensitive Auth (Local/Test)
+
+Agent asks user for test credentials, then fills form directly:
+
+```bash
+agent-browser open http://localhost:3000/login
+agent-browser snapshot -i
+agent-browser fill @e1 "$TEST_USERNAME"
+agent-browser fill @e2 "$TEST_PASSWORD"
+agent-browser click @e3
+agent-browser wait --load networkidle
+```
+
+## Sensitive Auth (Production/Real Accounts)
+
+Agent navigates to the auth step, then opens headed browser for user to complete manually:
+
+```bash
+# Agent navigates to the app and reaches the auth step
+agent-browser open https://app.example.com/login
+agent-browser snapshot -i
+# Found: @e1 [button] "Sign in with Google"
+
+# Open headed browser for user to complete OAuth/SSO
+agent-browser --headed click @e1
+# Tell user: "Please complete authentication in the browser window"
+agent-browser wait --url "**/app.example.com/dashboard**" --timeout 120000
+# Agent never sees the credentials
+```
+
+## Post-Auth: Offer to Save for Reuse
+
+After **either path** succeeds, check if credentials/state are already stored (`agent-browser auth list`, `ls .claude/tmp/auth-state-*.json`). If not, ask the user if they want to save for next time:
+
+- **Non-sensitive** → offer Auth Vault: `echo "pass" | agent-browser auth save <profile> --url <url> --username <user> --password-stdin`
+- **Sensitive** → offer State Persistence: `agent-browser state save .claude/tmp/auth-state-<name>.json` (saves session only, not credentials)
+
+Don't auto-save without asking. Don't re-ask if already stored for this site.
+
+## Auth Vault
+
+```bash
+# Save credentials once (encrypted with AGENT_BROWSER_ENCRYPTION_KEY)
+# Recommended: pipe password via stdin to avoid shell history exposure
+echo "pass" | agent-browser auth save github --url https://github.com/login --username user --password-stdin
+
+# Login using saved profile (LLM never sees password)
+agent-browser auth login github
+
+# List/show/delete profiles
+agent-browser auth list
+agent-browser auth show github
+agent-browser auth delete github
+```
+
+## Session Persistence
+
+```bash
+# Auto-save/restore cookies and localStorage across browser restarts
+agent-browser --session-name myapp open https://app.example.com/login
+# ... login flow ...
+agent-browser close  # State auto-saved to ~/.agent-browser/sessions/
+
+# Next time, state is auto-loaded
+agent-browser --session-name myapp open https://app.example.com/dashboard
+
+# Encrypt state at rest
+export AGENT_BROWSER_ENCRYPTION_KEY=$(openssl rand -hex 32)
+agent-browser --session-name secure open https://app.example.com
+
+# Manage saved states
+agent-browser state list
+agent-browser state show myapp-default.json
+agent-browser state clear myapp
+agent-browser state clean --older-than 7
+```
+
+**Naming convention**: `--session-name {project}-{domain}` (e.g., `claude-prime-influmation`, `my-saas-github`). Project prefix avoids collisions since sessions are stored globally.
 
 ## Basic Login Flow
 

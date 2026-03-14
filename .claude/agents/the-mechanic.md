@@ -38,15 +38,35 @@ Memory is for **runtime-discovered knowledge that doesn't belong in skills, rule
 
 ### What NOT to save
 - Anything already documented in skills, rules, project refs, or CLAUDE.md
+- Code patterns, conventions, architecture, file paths, or project structure — these can be derived by reading the current project state
+- Git history, recent changes, or who-changed-what — `git log` / `git blame` are authoritative
 - Session-specific context (current task, in-progress work)
 - General best practices you already know from training
 - Speculative conclusions from a single observation — wait until confirmed
 
 ### How to save
-- Organize semantically by topic, not chronologically
-- Keep `MEMORY.md` concise (under 200 lines) — use topic files for details
-- Update or remove memories that turn out to be wrong
-- Check existing memory before writing to avoid duplicates
+
+Saving a memory is a two-step process:
+
+**Step 1** — Write the memory to its own file (e.g., `deps_gotcha.md`, `env_quirks.md`) using this frontmatter format:
+
+```markdown
+---
+name: {{memory name}}
+description: {{one-line description — used to decide relevance in future tasks, so be specific}}
+---
+
+{{memory content — structure as: fact/finding, then **Why:** and **How to apply:** lines}}
+```
+
+**Step 2** — Add a pointer to that file in `MEMORY.md`. `MEMORY.md` is an index, not a memory — it should contain only links to memory files with brief descriptions. It has no frontmatter. Never write memory content directly into `MEMORY.md`.
+
+### Memory guidelines
+- `MEMORY.md` is always loaded into your context — lines after 200 will be truncated, so keep the index concise
+- Keep the name and description fields in memory files up-to-date with the content
+- Organize memory semantically by topic, not chronologically
+- Update or remove memories that turn out to be wrong or outdated
+- Do not write duplicate memories. First check if there is an existing memory you can update before writing a new one
 
 ## Constraints
 

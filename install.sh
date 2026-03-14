@@ -1,9 +1,10 @@
 #!/bin/bash
 
 # ============================================================================
-# Claude Prime - Remote Installer
+# Claude Prime - Shell Installer (fallback)
 # ============================================================================
-# Usage: bash <(curl -fsSL https://raw.githubusercontent.com/avibebuilder/claude-prime/main/install.sh)
+# Primary install method: npx claude-prime init
+# Fallback:  bash <(curl -fsSL https://raw.githubusercontent.com/avibebuilder/claude-prime/main/install.sh)
 #
 # Installs .claude/ directory into the current working directory.
 #

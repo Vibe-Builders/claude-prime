@@ -19,6 +19,9 @@ Check conversation context and skip completed steps.
 - Skip if research already done in conversation
 
 ### 2. Plan
+
+**IMPORTANT: All plans MUST be saved in the `plans/` directory at project root. NEVER create plan files elsewhere.**
+
 Create a progressive disclosure structure:
 
 ```
